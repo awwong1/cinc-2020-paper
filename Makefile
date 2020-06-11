@@ -1,27 +1,13 @@
-# file: Makefile	George B. Moody (george@mit.edu)
+# sudo apt install inotify-tools latexmk
 
-main.pdf:	main.tex
-	pdflatex main
-	bibtex main
-	pdflatex main
-	pdflatex main
+FILES = $(shell ls main.tex main.bib tex/*.tex)
 
-main.ps:	main.dvi
-	dvips -Ppdf -t letter -o main.ps main
+build:
+	latexmk -pdf main.tex
 
-main.dvi:	main.tex
-	latex main	# creates main.aux, needed by bibtex
-	bibtex main	# creates main.bbl, needed by latex
-	latex main	# merges references
-	latex main  # produces final copy with correct citation numbers
-
-kit:
-	make clean
-	cd ..; tar cfvz latex.tar.gz latex
-	cd ..; rm -f latex.zip; zip -r latex.zip latex
+watch: build
+	inotifywait --quiet --monitor --event close_write --format %e $(FILES) | while read events; do latexmk -pdf main.tex; done
 
 clean:
-	# cd example1; make clean
-	# cd example2; make clean
-	rm -f main.aux main.bbl main.blg main.dvi main.log
-	rm -f main.ps *~
+	rm -f main.aux main.lof main.lot main.out main.run.xml main.toc main.bbl main.blg main.dvi main.fdb_latexmk main.fls main.log
+	rm main.pdf || echo "Already clean"
