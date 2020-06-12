@@ -30,14 +30,14 @@ $^2$ Canadian VIGOUR Center, Edmonton, Canada }
 Standard 12-lead electrocardiograms (ECGs) are commonly used to detect cardiac irregularities such as atrial fibrillation, blocks and irregular complexes.
 For the Physionet/CinC 2020 Challenge, we built an algorithm using gradient boosted tree ensembles fitted on morphology and signal processing features.
 
-We used the ecgpuwave implementation of the Pan Tompkins method to detect the P-wave, QRS complex, and T-wave.
+We used the \emph{ecgpuwave} implementation of the Pan Tompkins method to detect the P-wave, QRS complex, and T-wave.
 We selected templates that exhibited maximum similarity with the rest of the ECG records in the same class using minimum distance criteria to isolate candidate templates for each cardiac abnormality.
 We leveraged these templates using Dynamic Time Warping (DTW), an algorithm used for measuring similarity between temporal sequences of varying speeds.
-From the annotated signals we derived morphology related durations, amplitudes, and intervals.
-Additional signal representation techniques, including discrete Fourier transformations and polynomial function fitting, were also used to extract features.
+From the annotated signals we derived additional features related to their durations, amplitudes, and intervals.
 
-We concatenate the features for all 12 leads and fit an ensemble of gradient boosting trees to predict probabilities of ECG instances belonging to each class.
+We concatenated the features for all 12 leads to fit an ensemble of gradient boosting trees and predicted probabilities of ECG instances belonging to each class.
 We evaluated using a 5-fold cross validation split of the provided dataset.
+TODO: new scoring metric
 
 \end{abstract}
 
@@ -49,18 +49,64 @@ However, ECG interpretation is a complex and highly skilled task undertaken by m
 Multiple studies have been conducted highlighting disagreements between non-cardiologists and cardiologist reference ECG interpretations, with up to a 33\% interpretation error rate~\cite{mele_improving_2008}.
 Despite active research in computerized interpretations of ECGs, trained human over-reading and confirmation is required and emphasized in published reports~\cite{schlapfer_computer-interpreted_2017}.
 
-This work classifies standard 12-lead ECGs to their clinical diagnosis as part of the PhysioNet/Computing in Cardiology Challenge~\cite{physionet_challenge_2020}.
+This work classifies standard 12-lead ECGs to their clinical diagnosis as part of the \emph{PhysioNet/Computing in Cardiology Challenge}~\cite{physionet_challenge_2020}.
 We developed a multi-label classification algorithm using natural language and signal processing inspired features and a gradient boosting tree ensemble.
 
-\subsection{Print font}
+\section{Dataset}
 
-Please use Times New Roman font. Use of this font by all authors ensures
-that our papers are produced consistently with a professional appearance.
+% TODO: update this when new dataset is released
+The dataset was released in two stages, containing 6877 and 3453 ECG records respectively.
+There were 73 different possible diagnosis for all 10330 records.
+Table~\ref{tab:dataset} highlights the label imbalance, with over 55\% of the dataset belonging to four classes.
+Over 30\% of the records were labeled with two or more diagnosis.
 
+\begin{table}[htbp]
+  \caption{\label{tab:dataset} Label distribution within the provided dataset.}
+  \vspace{4 mm}
+  \centerline{\begin{tabular}{lcr} \hline\hline
+  Diagnosis                       & Percent & Count \\ \hline
+  right bundle branch block       & 18.0\% & 1858 \\
+  atrial fibrillation             & 13.3\% & 1374 \\
+  nonspecific st t abnormality    & 12.5\% & 1293 \\
+  old myocardial infarction       & 11.3\% & 1167 \\
+  st depression                   & 9.0\%  & 925 \\
+  sinus rhythm                    & 8.9\%  & 921 \\
+  1st degree av block             & 8.0\%  & 828 \\
+  premature ventricular complexes & 6.8\%  & 700 \\
+  premature atrial contraction    & 6.7\%  & 688 \\
+  st interval abnormal            & 4.7\%  & 481 \\
+  myocardial ischemia             & 3.7\%  & 384 \\
+  myocardial infarction           & 3.6\%  & 374 \\
+  sinus tachycardia               & 2.9\%  & 303 \\
+  st elevation                    & 2.8\%  & 286 \\
+  left bundle branch block        & 2.7\%  & 274 \\ \hline\hline
+  \end{tabular}}
+  
+  \end{table}
+  
 
- \subsection{ Print size}  
+\section{Methodology}
 
-Follow the information given in Table 1 for all font print sizes and styles.
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=7.9cm]{fig/methodology.png}
+  \caption{Methodology overview. Feature engineering is performed concurrently for each lead then concatenated.}
+  \label{fig:methodology}
+\end{figure}
+
+An overview our methodology is presented in Figure~\ref{fig:methodology}.
+
+\subsection{Signal Pre-processing}
+
+First, we filtered the raw signal using a finite impulse response filter, limited between 3 Hz and 45 Hz.
+Next, we used the \emph{ecgpuwave} QRS detector to annotate each filtered signal lead, resulting in waveform start, end, and peaks for P-waves, T-waves, and R-waves~\cite{goldberger_ary_l_physiobank_2000}.
+Templates were extracted by segmenting out P-wave waveform starts and T-wave waveform ends.
+
+\subsection{Feature Engineering}
+
+\subsection{Classification}
+
+We trained an XGBoost binary classifier to for each clinical diagnosis~\cite{chen_xgboost_2016}.
 
 \section{Title block}
  
@@ -116,14 +162,6 @@ Figures can fit across both columns if necessary. Include all figures, with
 captions, in the text document at their desired locations, i.e., not at the
 end. To make sure that all labels are legible, use at least 9-point
 font. Use a line thickness of at least 0.5 mm in the body of the figure.
-
-\begin{figure}[h]
-%\centering
-\includegraphics[width=7.9cm]{fig/graph.png}
-\caption{Put the figure legend here, at the bottom, clearly describing the
-  figure.}
-\label{FIGURA1}
-\end{figure}
 
 Leave a line space after a figure legend. Be cautious with background
 colors in figures because they can make printed figures hard to read.

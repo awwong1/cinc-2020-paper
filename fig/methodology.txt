@@ -1,0 +1,28 @@
+@startuml
+hide empty description
+skinparam dpi 200
+
+state "Classifiers" as classifier
+classifier : * Per Label:\n\tBinary XGBoost\n\tEnsemble Classifier
+
+state "Signal Preprocessing" as sigproc
+sigproc: * Bandpass filter\n* Annotation (ecgpuwave)\n* Waveform normalization\n*DTW template extraction
+sigproc --> feat_eng : Filtered Signal,\nAnnotations,\nTemplates
+
+state "ECG Record" as record
+record: * 12-Lead Signal\n* Meta: Age, Sex
+record -right-> sigproc : Signal
+record --> classifier : Meta
+
+state "Feature Engineering" as feat_eng {
+  state "Full Waveform Features" as wave_feat
+  wave_feat : * Signal summary statistics\n* Fast Fourier Transform
+  --
+  state "Template Features" as temp_feat
+  temp_feat : * P-, R-, T-wave:\n\tSummary statistics for\n\tpeak amplitude,\n\twave duration\n* Full PQRST:\n\tDTW template distances
+  --
+  state "RR Interval Features" as rri_feat
+  rri_feat : * RR summary statistics\n* RR velocity & acceleration
+}
+feat_eng -left-> classifier : Signal\nFeatures
+@enduml
