@@ -12,6 +12,9 @@
 %
 \documentclass[twocolumn]{cinc}
 \usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+
 \begin{document}
 \bibliographystyle{cinc}
 
@@ -52,40 +55,61 @@ Despite active research in computerized interpretations of ECGs, trained human o
 This work classifies standard 12-lead ECGs to their clinical diagnosis as part of the \emph{PhysioNet/Computing in Cardiology Challenge}~\cite{physionet_challenge_2020}.
 We developed a multi-label classification algorithm using natural language and signal processing inspired features and a gradient boosting tree ensemble.
 
-\section{Dataset}
+\subsection{Dataset \& Scoring Criteria}
 
-% TODO: update this when new dataset is released
-The dataset was released in two stages, containing 6877 and 3453 ECG records respectively.
-There were 73 different possible diagnosis for all 10330 records.
-Table~\ref{tab:dataset} highlights the label imbalance, with over 55\% of the dataset belonging to four classes.
-Over 30\% of the records were labeled with two or more diagnosis.
+The official phase dataset contained a total of 43,101 ECG records.
+After dropping 6 records that had less half or more of their leads zero'd out, the remaining 43,095 records were used for further analysis.
+Each record was labeled with one or more SNOMED CT codes, with 123 different labels observed in the provided data.
 
 \begin{table}[htbp]
-  \caption{\label{tab:dataset} Label distribution within the provided dataset.}
+  \caption{\label{tab:dataset_labeldx} Top 7 labels within the provided dataset.}
   \vspace{4 mm}
-  \centerline{\begin{tabular}{lcr} \hline\hline
-  Diagnosis                       & Percent & Count \\ \hline
-  right bundle branch block       & 18.0\% & 1858 \\
-  atrial fibrillation             & 13.3\% & 1374 \\
-  nonspecific st t abnormality    & 12.5\% & 1293 \\
-  old myocardial infarction       & 11.3\% & 1167 \\
-  st depression                   & 9.0\%  & 925 \\
-  sinus rhythm                    & 8.9\%  & 921 \\
-  1st degree av block             & 8.0\%  & 828 \\
-  premature ventricular complexes & 6.8\%  & 700 \\
-  premature atrial contraction    & 6.7\%  & 688 \\
-  st interval abnormal            & 4.7\%  & 481 \\
-  myocardial ischemia             & 3.7\%  & 384 \\
-  myocardial infarction           & 3.6\%  & 374 \\
-  sinus tachycardia               & 2.9\%  & 303 \\
-  st elevation                    & 2.8\%  & 286 \\
-  left bundle branch block        & 2.7\%  & 274 \\ \hline\hline
+  \centerline{\begin{tabular}{lrr} \hline
+    Label                        & Percent & Count \\ \hline
+    sinus rhythm                 &  48.4\% & 20846 \\
+    left axis deviation          &  14.1\% &  6086 \\
+    myocardial infarction        &  14.0\% &  6019 \\
+    t wave abnormal              &  10.8\% &  4673 \\
+    left ventricular hypertrophy &   8.7\% &  3760 \\
+    nonspecific st t abnormality &   8.3\% &  3557 \\
+    atrial fibrillation          &   8.1\% &  3473 \\ \hline
   \end{tabular}}
-  
-  \end{table}
-  
+\end{table}
+
+Table~\ref{tab:dataset_labeldx} highlights the label imbalance, with over 87\% of the dataset diagnosed as one of the four most common labels.
+Approximately 55\% of the dataset is classified with more than one label, as shown in Table~\ref{tab:dataset_multidx}.
+
+\begin{table}[htbp]
+  \caption{\label{tab:dataset_multidx} Dataset multi-label records proportion.}
+  \vspace{4 mm}
+  \centerline{\begin{tabular}{lrr} \hline
+    Labels Per Record & Percent & Count \\ \hline
+        1 & 45.2\% & 19461 \\
+        2 & 21.8\% & 9378  \\
+        3 & 14.9\% & 6426 \\
+        4 &  9.9\% & 4280 \\
+        5 &  4.9\% & 2113 \\
+        6 &  2.2\% & 935 \\
+        7 &  0.8\% & 359 \\
+     $>7$ &  0.3\% & 143 \\\hline
+  \end{tabular}}
+\end{table}
+
+TODO: Scoring criteria, when released
 
 \section{Methodology}
+
+Our approach is inspired by existing methods which use feature engineering and shallow learning classifiers~\cite{tziakouri_identification_2017, goodwin_classification_2017}.
+
+\begin{equation}
+  \label{eq:dtw}
+  \text{DTW}(X, Y) = \min_W(\sum_{h=1}^{P}(w_k))
+\end{equation}
+
+Dynamic Time Warping (DTW) allows us to perform template matching of variable length time-series using a non-linear transformation.
+Given two time-series $X := (x_1, x_2, \ldots, x_N)$ and $Y := (y_1, y_2, \ldots, y_M)$, where $N, M \in \mathbb{N}$, an $N \times M$ matrix is constructed containing the distance of values $d(x_i, y_j)$.
+A warping path $W := (w_1, w_2, \ldots, w_k)$ aligns the elements of $X$ and $Y$ such that the distance between them is minimized.
+DTW is defined in equation~\ref{eq:dtw} as the minimization over potential warping paths based on the cumulative distance for each path~\cite{berndt_using_1994}.
 
 \begin{figure}[h]
   \centering
@@ -100,99 +124,18 @@ An overview our methodology is presented in Figure~\ref{fig:methodology}.
 
 First, we filtered the raw signal using a finite impulse response filter, limited between 3 Hz and 45 Hz.
 Next, we used the \emph{ecgpuwave} QRS detector to annotate each filtered signal lead, resulting in waveform start, end, and peaks for P-waves, T-waves, and R-waves~\cite{goldberger_ary_l_physiobank_2000}.
-Templates were extracted by segmenting out P-wave waveform starts and T-wave waveform ends.
+ECG PQRST templates were extracted by segmenting out continuous P-wave waveform starts to T-wave waveform ends.
+
+For DTW template matching candidates, the extracted PQRST signals were first pooled by lead and label.
+The BioSPPy implementation of the minimum distance template selection and clustering method was then used to isolate relevant templates per diagnosis~\cite{groupbiosppy_2015, uludag_biometric_2004}.
 
 \subsection{Feature Engineering}
+
+Our engineered features can be categorized as one of three categories: full waveform features, template features, and RR interval features.
 
 \subsection{Classification}
 
 We trained an XGBoost binary classifier to for each clinical diagnosis~\cite{chen_xgboost_2016}.
-
-\section{Title block}
- 
-On the first page, the title, authors, and institution(s) should be
-positioned and aligned as above.
-
-\subsection{Title} 
- 
-Do not use abbreviations in the title and keep to one or two
-lines. Remember that the title should be easily understood when cited as a
-reference in another publication. Make sure the title is centered. Note the
-use of capital letters, as shown in the example above. Do not place a
-period at the end of the title.
-
-\subsection{ Author line}  
- 
-If it is essential to link authors to different institutions, use a small
-superscript at the end of each family name and link to each institution. No author degrees should be
-included. No periods should appear in the author line.
-
- \subsection{ Institution address} 
-
- This address identifies the institution(s). It is not a postal address and
- should not contain postal or zip codes. A full postal address is given at
- the end of the paper under `Address for correspondence'. Do not put line
- spaces between address lines or use a period at the end.
- 
- \section{ Tables and figures}
-\subsection{Tables} 
-\vspace{-4 mm}
-\begin{table}[htbp]
-\caption{\label{tab:font} Print sizes for different parts of the paper.}
-\vspace{4 mm}
-\centerline{\begin{tabular}{lcr} \hline\hline
-Text    & Point size    & Type \\ \hline
-Title   & 14 point      & Bold \\
-Author line     & 12 point      & \\
-Institution line        & 12 point      & \\
-Abstract heading        & 11 point      & Bold \\
-All other headings      & 12 point      & Bold \\
-Abstract text   & 10 point      & Italic \\
-References and address  & 9 point       & \\
-All other text  & 10 point      & \\ \hline\hline
-\end{tabular}}
-
-\end{table}
-
-Keep \ the layout of \ tables simple. Avoid  heavy lines and boxes.
-
-\subsection{ Figures}   
-
-Figures can fit across both columns if necessary. Include all figures, with
-captions, in the text document at their desired locations, i.e., not at the
-end. To make sure that all labels are legible, use at least 9-point
-font. Use a line thickness of at least 0.5 mm in the body of the figure.
-
-Leave a line space after a figure legend. Be cautious with background
-colors in figures because they can make printed figures hard to read.
-
-\section{Final page}
-
-The text on the final page should be arranged so that both columns are
-approximately the same length.
-
-\balance
-
-\section{Style of references}     
-
-All references should be included in the text in square brackets in their
-order of appearance, e.g., \cite{tag}, \cite{tag,ito}, or
-\cite{tag,ito,fardel,buncombe}. In the reference list, use the Vancouver
-style (see IEEE Transactions on Biomedical Engineering or Annals of
-Biomedical Engineering). The main goal is to be consistent in your
-formatting of references.
-
-References to \emph{Computers in Cardiology} (or \emph{Computing in
-  Cardiology}) proceedings should include the volume and page numbers,
-unless no page numbers were included (post-2016). Check the style in the
-examples below.
-
-
-\section{ Final checks }     
- 
-Print this template without resizing or centering and compare with your
-final paper to ensure that you have not accidentally changed margins and
-layout.
 
 
 \section*{Acknowledgments}
@@ -203,8 +146,7 @@ We would like to thank Eric Ly and Leiah Luoma for their help and guidance durin
 \begin{correspondence}
 Alexander W. Wong\\
 Department of Computing Science\\
-2-32 Athabasca Hall\\
-University of Alberta\\
+2-32 Athabasca Hall, University of Alberta\\
 Edmonton, Alberta, Canada\\
 T6G 2E8\\
 alex.wong@ualberta.ca
