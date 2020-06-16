@@ -100,16 +100,17 @@ TODO: Scoring criteria, when released
 \section{Methodology}
 
 Our approach is inspired by existing methods which use feature engineering and shallow learning classifiers~\cite{tziakouri_identification_2017, goodwin_classification_2017}.
+An overview our methodology is presented in Figure~\ref{fig:methodology}.
 
 \begin{equation}
   \label{eq:dtw}
   \text{DTW}(X, Y) = \min_W(\sum_{h=1}^{P}(w_k))
 \end{equation}
 
-Dynamic Time Warping (DTW) allows us to perform template matching of variable length time-series using a non-linear transformation.
-Given two time-series $X := (x_1, x_2, \ldots, x_N)$ and $Y := (y_1, y_2, \ldots, y_M)$, where $N, M \in \mathbb{N}$, an $N \times M$ matrix is constructed containing the distance of values $d(x_i, y_j)$.
-A warping path $W := (w_1, w_2, \ldots, w_k)$ aligns the elements of $X$ and $Y$ such that the distance between them is minimized.
-DTW is defined in equation~\ref{eq:dtw} as the minimization over potential warping paths based on the cumulative distance for each path~\cite{berndt_using_1994}.
+Dynamic Time Warping (DTW) measures the similarity of two different sequences~\cite{berndt_using_1994}.
+Given two time-series $X := (x_1, x_2, \ldots, x_N)$ and $Y := (y_1, y_2, \ldots, y_M)$ where $N, M \in \mathbb{N}$, an $N \times M$ matrix is constructed containing the distance between each element of the two series, $d(x_i, y_j)$.
+A warping path $W := (w_1, w_2, \ldots, w_k)$ aligns $X$ and $Y$ such that the distance between them is minimized.
+Equation~\ref{eq:dtw} defines DTW as the minimization over all warping paths based on the cumulative distance for each path.
 
 \begin{figure}[h]
   \centering
@@ -118,11 +119,10 @@ DTW is defined in equation~\ref{eq:dtw} as the minimization over potential warpi
   \label{fig:methodology}
 \end{figure}
 
-An overview our methodology is presented in Figure~\ref{fig:methodology}.
-
 \subsection{Signal Pre-processing}
 
-First, we filtered the raw signal using a finite impulse response filter, limited between 3 Hz and 45 Hz.
+We first resampled all of our signals to 300 Hz.
+We then filtered the raw signal using a finite impulse response filter, limited between 3 Hz and 45 Hz.
 Next, we used the \emph{ecgpuwave} QRS detector to annotate each filtered signal lead, resulting in waveform start, end, and peaks for P-waves, T-waves, and R-waves~\cite{goldberger_ary_l_physiobank_2000}.
 ECG PQRST templates were extracted by segmenting out continuous P-wave waveform starts to T-wave waveform ends.
 
@@ -131,12 +131,32 @@ The BioSPPy implementation of the minimum distance template selection and cluste
 
 \subsection{Feature Engineering}
 
-Our engineered features can be categorized as one of three categories: full waveform features, template features, and RR interval features.
+Our engineered features can be categorized as one of three categories.
+Full waveform features are derived using the end-to-end ECG signal.
+Template features are constructed from the extracted PQRST segments during pre-processing.
+RR interval features rely on the underlying heart rate-the relative distances between each R-peak.
+Summary statistics refer to the min, max, median, mean, standard deviation, and variance.
+Each extraction technique was performed independently per lead.
+
+For full waveform features, we used summary statistics for the filtered signal amplitude and the discrete fourier transform of the sequence.
+Applying the Hann window to our signal, we binned the fourier transform output to 50 discrete bins containing the range 0-50 Hz.
+
+Template features included summary statistics for the P-wave, T-wave, and R-wave peak amplitudes and wave durations.
+Additionally, we applied DTW to compare the PQRST segments to each of the candidate segments per diagnosis to derive distance measurements.
+
+We used summary statistics obtained from the distances between consecutive R-peaks.
+To capture change in heart rate, we also derived summary statistics from RR interval acceleration and velocity.
 
 \subsection{Classification}
 
-We trained an XGBoost binary classifier to for each clinical diagnosis~\cite{chen_xgboost_2016}.
+We trained an XGBoost binary classifier to for each clinical diagnosis, taking as input all constructed features, the patient age and sex as input~\cite{chen_xgboost_2016}.
+A 5-fold cross validation split was used to tune for hyperparameters.
 
+\section{Results}
+TODO
+
+\section{Discussion}
+TODO
 
 \section*{Acknowledgments}
 We would like to thank Eric Ly and Leiah Luoma for their help and guidance during our research journey.
