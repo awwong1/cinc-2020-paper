@@ -18,10 +18,10 @@
 \begin{document}
 \bibliographystyle{cinc}
 
-\title{Dynamic Time Warping with Gradient Boosting Tree Ensemble for \\
-12-Lead Electrocardiogram Multilabel Classification}
+\title{Multilabel 12-Lead Electrocardiogram Classification Using \\
+Gradient Boosting Tree Ensemble}
 
-\author {Alexander W Wong$^{1}$, Weijie Sun$^{2}$, Sunil V Kalmady$^{2}$, Padma Kaul$^{2}$, Abram Hindle$^{1}$\\
+\author {Alexander W. Wong$^{1}$, Weijie Sun$^{2}$, Sunil V. Kalmady$^{2}$, Padma Kaul$^{2}$, Abram Hindle$^{1}$\\
 \ \\
  $^1$ University of Alberta, Edmonton, Canada \\
 $^2$ Canadian VIGOUR Center, Edmonton, Canada }
@@ -31,25 +31,19 @@ $^2$ Canadian VIGOUR Center, Edmonton, Canada }
 \begin{abstract}
 
 Standard 12-lead electrocardiograms (ECGs) are commonly used to detect cardiac irregularities such as atrial fibrillation, blocks and irregular complexes.
-For the Physionet/CinC 2020 Challenge, we built an algorithm using gradient boosted tree ensembles fitted on morphology and signal processing features.
+For the PhysioNet/CinC 2020 Challenge, we built an algorithm using gradient boosted tree ensembles fitted on morphology and signal processing features.
 
-We used the \emph{ecgpuwave} implementation of the Pan Tompkins method to detect the P-wave, QRS complex, and T-wave.
-We selected templates that exhibited maximum similarity with the rest of the ECG records in the same class using minimum distance criteria to isolate candidate templates for each cardiac abnormality.
-We leveraged these templates using Dynamic Time Warping (DTW), an algorithm used for measuring similarity between temporal sequences of varying speeds.
-From the annotated signals we derived additional features related to their durations, amplitudes, and intervals.
-
+For each lead, we derived features from the heart rate variability, PQRST template shape, and full waveform duration.
 We concatenated the features for all 12 leads to fit an ensemble of gradient boosting trees and predicted probabilities of ECG instances belonging to each class.
-We evaluated using a 5-fold cross validation split of the provided dataset.
-TODO: new scoring metric
+We used repeated random sub-sampling by splitting our dataset of 43,101 records into 100 independent runs of 85:15 training/evaluation splits for our evaluation results.
 
 \end{abstract}
 
 \section{Introduction}
 
-Cardiovascular diseases are a non-communicable leading cause of death, responsible for an estimated 17.8 million fatalities world wide in 2017~\cite{roth_global_2018}.
+% Cardiovascular diseases are a non-communicable leading cause of death, responsible for an estimated 17.8 million fatalities world wide in 2017~\cite{roth_global_2018}.
 The electrocardiogram (ECG) is the most effective tool and current best practice strategy for detecting cardiac diseases, outperforming screening history and physical examinations in accuracy and sensitivity~\cite{harmon_effectiveness_2015}.
-However, ECG interpretation is a complex and highly skilled task undertaken by multiple health care professionals ranging from physicians, nurses, paramedics, and technicians.
-Multiple studies have been conducted highlighting disagreements between non-cardiologists and cardiologist reference ECG interpretations, with up to a 33\% interpretation error rate~\cite{mele_improving_2008}.
+However, ECG interpretation is a complex and highly skilled task with disagreements between cardiologist and non-cardiologist health care staff reference interpretations, with up to a 33\% interpretation error rate~\cite{mele_improving_2008}.
 Despite active research in computerized interpretations of ECGs, trained human over-reading and confirmation is required and emphasized in published reports~\cite{schlapfer_computer-interpreted_2017}.
 
 This work classifies standard 12-lead ECGs to their clinical diagnosis as part of the \emph{PhysioNet/Computing in Cardiology Challenge}~\cite{physionet_challenge_2020}.
@@ -57,62 +51,65 @@ We developed a multi-label classification algorithm using natural language and s
 
 \subsection{Dataset \& Scoring Criteria}
 
-The official phase dataset contained a total of 43,101 ECG records.
-After dropping 6 records that had less half or more of their leads zero'd out, the remaining 43,095 records were used for further analysis.
-Each record was labeled with one or more SNOMED CT codes, with 123 different labels observed in the provided data.
+The official phase dataset contains a total of 43,101 ECG records.
+Each record is labelled with a set of one or more SNOMED CT codes, although not all labels are used in the challenge.
+Tab.~\ref{tab:dataset_labeldx} displays the 27 codes, mapped to labels for readability, chosen for evaluation by the challenge.
 
 \begin{table}[htbp]
-  \caption{\label{tab:dataset_labeldx} Top 7 labels within the provided dataset.}
+  \caption{\label{tab:dataset_labeldx} Labels count and percentage in dataset.}
   \vspace{4 mm}
   \centerline{\begin{tabular}{lrr} \hline
-    Label                        & Percent & Count \\ \hline
-    sinus rhythm                 &  48.4\% & 20846 \\
-    left axis deviation          &  14.1\% &  6086 \\
-    myocardial infarction        &  14.0\% &  6019 \\
-    t wave abnormal              &  10.8\% &  4673 \\
-    left ventricular hypertrophy &   8.7\% &  3760 \\
-    nonspecific st t abnormality &   8.3\% &  3557 \\
-    atrial fibrillation          &   8.1\% &  3473 \\ \hline
+    Dx & Count & \% Total \\ \hline
+    1st degree av block & 2394 & 5.6\% \\
+    atrial fibrillation & 3475 & 8.0\% \\
+    atrial flutter & 314 & 0.7\% \\
+    bradycardia & 288 & 0.7\% \\
+    complete right bundle branch block & 683 & 1.6\% \\
+    incomplete right bundle branch block & 1611 & 3.7\% \\
+    left anterior fascicular block & 1806 & 4.2\% \\
+    left axis deviation & 6086 & 14.1\% \\
+    left bundle branch block & 1041 & 2.4\% \\
+    low qrs voltages & 556 & 1.3\% \\
+    nonspecific intraventricular conduction & 997 & 2.3\% \\
+    pacing rhythm & 299 & 0.7\% \\
+    premature atrial contraction & 1729 & 4.0\% \\
+    premature ventricular contractions & 188 & 0.4\% \\
+    prolonged pr interval & 340 & 0.7\% \\
+    prolonged qt interval & 1513 & 3.5\% \\
+    qwave abnormal & 1013 & 2.4\% \\
+    right axis deviation & 427 & 1.0\% \\
+    right bundle branch block & 2402 & 5.6\% \\
+    sinus arrhythmia & 1240 & 2.9\% \\
+    sinus bradycardia & 2359 & 5.5\% \\
+    sinus rhythm & 20846 & 48.4\% \\
+    sinus tachycardia & 2402 & 5.6\% \\
+    supraventricular premature beats & 215 & 0.5\% \\
+    t wave abnormal & 4673 & 10.8\% \\
+    t wave inversion & 1112 & 2.6\% \\
+    ventricular premature beats & 365 & 0.8\% \\ \hline
   \end{tabular}}
 \end{table}
 
-Table~\ref{tab:dataset_labeldx} highlights the label imbalance, with over 87\% of the dataset diagnosed as one of the four most common labels.
-Approximately 55\% of the dataset is classified with more than one label, as shown in Table~\ref{tab:dataset_multidx}.
+Given a set of diagnoses $C = \{c_i\}$, we compute a confusion matrix $A = [a_{ij}]$ where $a_{ij}$ contains records that are classified as class $c_i$ and belong to class $c_j$.
+The weights $W = [w_{ij}]$, shown in Fig.~\ref{fig:dataset_labeldx}, are set by the challenge to indicate clinical similarity between classes.
+The scoring function is defined as $\text{score} = \sum_{ij} w_{ij} a_{ij}$.
 
-\begin{table}[htbp]
-  \caption{\label{tab:dataset_multidx} Dataset multi-label records proportion.}
-  \vspace{4 mm}
-  \centerline{\begin{tabular}{lrr} \hline
-    Labels Per Record & Percent & Count \\ \hline
-        1 & 45.2\% & 19461 \\
-        2 & 21.8\% & 9378  \\
-        3 & 14.9\% & 6426 \\
-        4 &  9.9\% & 4280 \\
-        5 &  4.9\% & 2113 \\
-        6 &  2.2\% & 935 \\
-        7 &  0.8\% & 359 \\
-     $>7$ &  0.3\% & 143 \\\hline
-  \end{tabular}}
-\end{table}
-
-TODO: Scoring criteria, when released
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=8cm]{fig/label_weights.png}
+  \caption{Evaluation scoring function weights per label.}
+  \label{fig:dataset_labeldx}
+\end{figure}
 
 \section{Methodology}
 
 Our approach is inspired by existing methods which use feature engineering and shallow learning classifiers~\cite{tziakouri_identification_2017, goodwin_classification_2017}.
 An overview our methodology is presented in Figure~\ref{fig:methodology}.
 
-\begin{equation}
-  \label{eq:dtw}
-  \text{DTW}(X, Y) = \min_W(\sum_{h=1}^{P}(w_k))
-\end{equation}
+Our feature extraction approach relies on the \emph{NeuroKit2} (version \texttt{0.0.40}) neurophysiological signal processing library for ECG signal cleaning, PQRST annotation, signal quality calculation, and heart rate variability metrics~\cite{neurokit2}.
+Additionally, we use the general purpose time series feature extraction library \emph{tsfresh} (version \texttt{0.16.0}) for analysis of the PQRST heart beat window, as well as the overall lead signal~\cite{CHRIST201872}.
 
-Dynamic Time Warping (DTW) measures the similarity of two different sequences~\cite{berndt_using_1994}.
-Given two time-series $X := (x_1, x_2, \ldots, x_N)$ and $Y := (y_1, y_2, \ldots, y_M)$ where $N, M \in \mathbb{N}$, an $N \times M$ matrix is constructed containing the distance between each element of the two series, $d(x_i, y_j)$.
-A warping path $W := (w_1, w_2, \ldots, w_k)$ aligns $X$ and $Y$ such that the distance between them is minimized.
-Equation~\ref{eq:dtw} defines DTW as the minimization over all warping paths based on the cumulative distance for each path.
-
-\begin{figure}[h]
+\begin{figure}[ht]
   \centering
   \includegraphics[width=7.9cm]{fig/methodology.png}
   \caption{Methodology overview. Feature engineering is performed concurrently for each lead then concatenated.}
@@ -121,45 +118,106 @@ Equation~\ref{eq:dtw} defines DTW as the minimization over all warping paths bas
 
 \subsection{Signal Pre-processing}
 
-We first resampled all of our signals to 300 Hz.
-We then filtered the raw signal using a finite impulse response filter, limited between 3 Hz and 45 Hz.
-Next, we used the \emph{ecgpuwave} QRS detector to annotate each filtered signal lead, resulting in waveform start, end, and peaks for P-waves, T-waves, and R-waves~\cite{goldberger_ary_l_physiobank_2000}.
-ECG PQRST templates were extracted by segmenting out continuous P-wave waveform starts to T-wave waveform ends.
+Prior to feature extraction and classification, signal pre-processing was performed to normalize and clean the raw ECG signal.
+Slow drift and DC offset were removed with a highpass Butterworth filter followed by smoothing using a 50Hz period moving average kernel.
+We treat each of the cleaned lead signals independently and annotate the PQRST peaks, the PRT onsets and offsets, and the atrial and ventricular systole and diastole phases.
 
-For DTW template matching candidates, the extracted PQRST signals were first pooled by lead and label.
-The BioSPPy implementation of the minimum distance template selection and clustering method was then used to isolate relevant templates per diagnosis~\cite{groupbiosppy_2015, uludag_biometric_2004}.
+We isolate one candidate heart beat signal for each lead by segmenting heart beat windows as a -0.35, 0.5 second window around each R-peak, shortening this window to -0.25 and 0.4 if the mean heart rate exceeds 80 beats per minute.
+We use a continuous index of ECG signal quality by interpolating the distance of each QRS segment from the average QRS segment in the data.
+ECG signal quality is therefore relative for each step in the entire length of the signal, where 1 corresponds to beats that are closest to the average sample and 0 corresponds to beats that are most distant to the average sample.
+We choose the heart beat window with the highest signal quality as our candidate lead PQRST template.
 
 \subsection{Feature Engineering}
 
 Our engineered features can be categorized as one of three categories.
 Full waveform features are derived using the end-to-end ECG signal.
-Template features are constructed from the extracted PQRST segments during pre-processing.
-RR interval features rely on the underlying heart rate-the relative distances between each R-peak.
-Summary statistics refer to the min, max, median, mean, standard deviation, and variance.
+Template features are constructed from the extracted heart beat window during pre-processing.
+Heart rate variability features rely on the relative distances between each R-peak.
 Each extraction technique was performed independently per lead.
 
-For full waveform features, we used summary statistics for the filtered signal amplitude and the discrete fourier transform of the sequence.
-Applying the Hann window to our signal, we binned the fourier transform output to 50 discrete bins containing the range 0-50 Hz.
+For full waveform features, we used the cleaned ECG signal and applied the \emph{tsfresh} feature extraction library.
+Due to memory and time constraints for this category of features, the cleaned signal was resampled to 500Hz.
+We further limited the signal to the middle 4000 samples, or 4 seconds, to reduce the impact of starting and trailing noise.
+From each lead, we applied the \emph{tsfresh} \texttt{ComprehensiveFCParameters} setting to generate 763 full waveform features.
 
-Template features included summary statistics for the P-wave, T-wave, and R-wave peak amplitudes and wave durations.
-Additionally, we applied DTW to compare the PQRST segments to each of the candidate segments per diagnosis to derive distance measurements.
+Template features were derived from the isolated heart beat window with highest signal quality, using the \emph{tsfresh} library.
+No downsampling or truncation was necessary as extracted windows were less than 1 second in length.
+Similar to the full waveform features, 763 template features were generated per lead.
 
-We used summary statistics obtained from the distances between consecutive R-peaks.
-To capture change in heart rate, we also derived summary statistics from RR interval acceleration and velocity.
+Heart rate variability (HRV) features reported by \emph{NeuroKit2} were calculated using the cleaned signal and corresponding signal annotations.
+The relative R-peak distances were the primary inputs for these generated features.
+For each lead, 53 different HRV features were generated.
+
+For each 12-lead record we combined all three categories of engineered features with the age and sex parsed from the ECG record metadata.
+We arrive at a $12 * (763 + 763 + 53) + 2 = 18,950$ length feature vector per 12-lead record.
+For undefined features, such as the HRV feature set on signals where no PQRST annotations could be generated, \texttt{NaN} placeholders were set.
 
 \subsection{Classification}
 
-We trained an XGBoost binary classifier to for each clinical diagnosis, taking as input all constructed features, the patient age and sex as input~\cite{chen_xgboost_2016}.
-A 5-fold cross validation split was used to tune for hyperparameters.
+We trained a XGBoost binary classifier for each clinical diagnosis, using \texttt{xgboost@1.1.1}~\cite{chen_xgboost_2016}.
+We used the \texttt{gbtree} booster method with the \texttt{gpu\_hist} tree method and \texttt{gradient\_based} sampling method.
+All other classifier model parameters were left to their default values.
+
+The evaluation scoring function weights were used during training as instance sample weights, threshold set to 0.5.
+For example, when training the 1st degree av block (IAVB) classifier we also considered instances of bradycardia (Brady), incomplete right bundle branch block (IRBBB), prolonged PR interval (LPR), sinus arrhythmia (SA), and sinus bradycardia (SB) as positive examples with 0.5 weight.
+Other labels that had scoring function weights below 0.5 were treated as negative examples with a sample weight of 1.
+To account for the dataset label imbalance, we further scaled the positive example weight using the number of negative examples over the positive examples in the training set split.
+
+For our evaluation results, we performed repeated random sub-sampling of our total dataset, randomly splitting our 43,101 records into an 85:15 training/evaluation set split.
+Our results contain the aggregate of 100 independent runs of this configuration.
 
 \section{Results}
-TODO
 
-\section{Discussion}
-TODO
+Using 100 independent runs of an 85:15 training and evaluation split of the provided dataset, our methodology attained a mean challenge metric score of 0.478 on the evaluation set.
+Additionally, we attained a mean values for AUROC of 0.886, AUPRC of 0.383, accuracy of 0.260, overall $\text{F}_1$ score of 0.364, $\text{F}_\beta$ of 0.416, and $\text{G}_\beta$ measure of 0.220.
+An overview of the experiment classification metrics can be found in Figure~\ref{fig:classification_metrics_summary}.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=7.9cm]{fig/classification_metrics.png}
+  \caption{Summary of classification metrics over 100 experiments on all labels. Annotations indicate mean value.}
+  \label{fig:classification_metrics_summary}
+\end{figure}
+
+Our model's top three best classified labels are normal sinus rhythm (SNR, $\text{F}_1$ mean: 0.921), right bundle branch block (RBBB, $\text{F}_1$ mean: 0.854), and left bundle branch block (LBBB, $\text{F}_1$ mean: 0.838).
+The summary of the each of our 100 experiments $\text{F}_1$ scores for each label can be found in Figure~\ref{fig:f1_score}.
+
+\begin{figure*}[ht]
+  \centering
+  \includegraphics[width=17.0cm]{fig/label_f1s.png}
+  \caption{Label specific F1 classification score over 100 experiments. Annotations indicate mean value.}
+  \label{fig:f1_score}
+\end{figure*}
+
+Furthermore, we ran a Pearson correlation coefficient test between the label $\text{F}_1$ means and the label counts within our dataset.
+The statistical test revealed a Pearson correlation coefficient of 0.569 at a p-value of $3.7 * 10^{-3}$.
+This result suggests that a positive linear correlation exists between the label occurrence in our dataset and our classification model's $\text{F}_1$ score.
+
+On the official phase hold out test set, our methodology achieved a challenge score of \emph{TODO: Official phase results when released. How to discuss feature importance, or OMIT?}.
+
+\section{Discussion \& Future Work}
+
+Despite the label specific scaling of our dataset training weights, the correlation between the label occurrence with the $\text{F}_1$ scores revealed further improvements are necessary to address the existing label imbalance.
+The label imbalance may be addressed by adding more low occurrence disorders into the existing corpus of ECG records.
+Synthesizing new records of low occurrence disorders to use as training data may also prove promising.
+Additionally, exploration of new features to use as classifier inputs may reveal common characteristics of specific heart disorders that are currently unused or missing.
+
+Our approach, although applicable to 12-lead ECGs, perform feature extraction on each lead separately before concatenating the features together for classification.
+We believe that further improvements can be made utilizing feature extraction approaches capable of handling multi-dimensional time series data.
+
+We experimented with removing features with variance threshold under 0, 10, 20, and 30\%, as well as feature selection using a separate XGBoost classification model to calculate feature importances.
+Although our classification input dimension used a large number of features, we found no statistically significant improvements in challenge score by incorporating feature selection into our machine learning pipeline.
+
+\section{Conclusion}
+
+We created an algorithm for the classification of 27 heart conditions using natural language and signal processing inspired feature engineering and an XGBoost tree ensemble classifier.
+We combined a set of 18,950 features from full waveform, template, and heart rate variability groups.
+Using 100 repeated random sub-sampling, our evaluation challenge score was 0.478.
+The official phase challenge score on PhysioNet's hold out test set was \emph{TODO}.
+
 
 \section*{Acknowledgments}
-We would like to thank Eric Ly and Leiah Luoma for their help and guidance during our research journey.
+We would like to thank Eric Ly and Leiah Luoma of the Canadian VIGOUR Center for their help and guidance during our research journey.
 
 \bibliography{main}
 
