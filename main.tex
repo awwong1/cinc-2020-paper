@@ -37,6 +37,10 @@ For each lead, we derived features from the heart rate variability, PQRST templa
 We concatenated the features for all 12 leads to fit an ensemble of gradient boosting trees and predicted probabilities of ECG instances belonging to each class.
 We used repeated random sub-sampling by splitting our dataset of 43,101 records into 100 independent runs of 85:15 training/evaluation splits for our evaluation results.
 
+TODO: Add official phase results.
+TODO: 100 independent runs, currently around 80. Update figures, although the differences are expected to be minimal
+
+
 \end{abstract}
 
 \section{Introduction}
@@ -170,6 +174,7 @@ Our results contain the aggregate of 100 independent runs of this configuration.
 
 Using 100 independent runs of an 85:15 training and evaluation split of the provided dataset, our methodology attained a mean challenge metric score of 0.478 on the evaluation set.
 Additionally, we attained a mean values for AUROC of 0.886, AUPRC of 0.383, accuracy of 0.260, overall $\text{F}_1$ score of 0.364, $\text{F}_\beta$ of 0.416, and $\text{G}_\beta$ measure of 0.220.
+The challenge provided scoring code defined $\beta = 2$.
 An overview of the experiment classification metrics can be found in Figure~\ref{fig:classification_metrics_summary}.
 
 \begin{figure}[ht]
