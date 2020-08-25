@@ -11,8 +11,8 @@ sigproc --> feat_eng : Filtered Signal,\nAnnotations,\nTemplates
 
 state "ECG Record" as record
 record: * 12-Lead Signal\n* Meta: Age, Sex
-record -right-> sigproc : Signal
-record --> classifier : Meta
+record -right-> sigproc : 12-Lead Signal
+record --> classifier : Age, Sex
 
 state "Feature Engineering" as feat_eng {
   state "Full Waveform Features" as wave_feat
@@ -24,5 +24,5 @@ state "Feature Engineering" as feat_eng {
   state "Heart Rate Variability Features" as rri_feat
   rri_feat : NeuroKit2 heart rate variability features\nfrom cleaned and PQRST annotated signal
 }
-feat_eng -left-> classifier : Signal\nFeatures
+feat_eng -left-> classifier : Derived\nFeatures
 @enduml
