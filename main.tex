@@ -178,13 +178,13 @@ Our challenge classification results were generated from training 100 additional
 \begin{figure}[ht]
   \centering
   \includegraphics[width=7.9cm]{fig/top_features.png}
-  \caption{Breakdown of top 1000 XGBoost features. Age is an important feature, while sex is not important.}
+  \caption{Breakdown of the top 1,000 XGBoost features. Age is an important feature, while sex is not important.}
   \label{fig:top_features}
 \end{figure}
 
 A categorical visualization of our top 1000 features, broken down by lead and feature type, is shown in Figure~\ref{fig:top_features}.
-Our methodology attained a mean challenge metric score of 0.484 on the evaluation set.
-Additionally, we attained a mean values for AUROC of 0.890, AUPRC of 0.390, accuracy of 0.251, overall $\text{F}_1$ score of 0.370, $\text{F}_\beta$ of 0.427, and $\text{G}_\beta$ measure of 0.222.
+Our methodology attained a mean challenge metric score of 0.484 on our evaluation set.
+Additionally, we attained mean values for AUROC of 0.890, AUPRC of 0.390, accuracy of 0.251, overall $\text{F}_1$ score of 0.370, $\text{F}_\beta$ of 0.427, and $\text{G}_\beta$ measure of 0.222.
 The challenge provided scoring code defined $\beta = 2$.
 An overview of the experiment classification metrics can be found in Figure~\ref{fig:classification_metrics_summary}.
 
@@ -196,7 +196,7 @@ An overview of the experiment classification metrics can be found in Figure~\ref
 \end{figure}
 
 Our model's top three best classified labels are normal sinus rhythm (SNR, $\text{F}_1$ mean: 0.920), right bundle branch block (RBBB, $\text{F}_1$ mean: 0.853), and left bundle branch block (LBBB, $\text{F}_1$ mean: 0.836).
-The summary of the each of our 100 experiments $\text{F}_1$ scores for each label can be found in Figure~\ref{fig:f1_score}.
+The summary of our 100 experiment $\text{F}_1$ scores for each label is in Figure~\ref{fig:f1_score}.
 
 \begin{figure*}[ht]
   \centering
@@ -225,8 +225,8 @@ We believe that further improvements can be made utilizing feature extraction ap
 
 We created an algorithm for the classification of 27 heart conditions using natural language and signal processing inspired feature engineering and an XGBoost tree ensemble classifier.
 We combined a set of 18,804 features from full waveform, template, and heart rate variability groups.
-Using 100 repeated random sub-sampling of 85:15 train/evaluation, we trained models to evaluate feature importances to distill our input features to a set of 1,000 important features.
-Using the reduced set of 1,000 features, we retrained our models and report our mean evaluation challenge score of 0.478.
+Using 100 repeated random sub-sampling of 85:15 train/evaluation, we trained models to get feature importances and distilled out 1,000 most important features.
+Using this reduced set of 1,000 features, we retrained our models and achieved a mean challenge score of 0.478 on our evaluation split.
 The official phase challenge score on PhysioNet's hold out test set is 0.447.
 
 
