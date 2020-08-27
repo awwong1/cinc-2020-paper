@@ -1,6 +1,6 @@
 @startuml
 hide empty description
-skinparam dpi 200
+skinparam dpi 300
 
 state "Classifiers" as classifier
 classifier : * Per Label:\n\tBinary XGBoost\n\tEnsemble Classifier
@@ -16,9 +16,9 @@ record --> classifier : Age, Sex
 
 state "Feature Engineering" as feat_eng {
   state "Full Waveform Features" as wave_feat
-  wave_feat : resample to 500Hz\ntsfresh time series features on signal,\ncapped to 4 seconds
+  wave_feat : resample to 500Hz, tsfresh time series\nfeatures on signal capped to 4 seconds
   --
-  state "Template Features" as temp_feat
+  state "Heartbeat Template Features" as temp_feat
   temp_feat : no resampling, keep maximum resolution\nHeart beat//PQRST window selection\ntsfresh time series features on window
   --
   state "Heart Rate Variability Features" as rri_feat
