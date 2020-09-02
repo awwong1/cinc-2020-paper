@@ -62,7 +62,7 @@ Table~\ref{tab:dataset_labeldx} displays the 27 labels selected for evaluation b
   \caption{\label{tab:dataset_labeldx} Labels count and percentage in dataset.}
   \vspace{4 mm}
   \centerline{\begin{tabular}{lrr} \hline
-    Dx & Count & \% Total \\ \hline
+    Diagnosis & Count & \% Total \\ \hline
     1st degree av block & 2394 & 5.6\% \\
     atrial fibrillation & 3475 & 8.0\% \\
     atrial flutter & 314 & 0.7\% \\
@@ -72,14 +72,14 @@ Table~\ref{tab:dataset_labeldx} displays the 27 labels selected for evaluation b
     left anterior fascicular block & 1806 & 4.2\% \\
     left axis deviation & 6086 & 14.1\% \\
     left bundle branch block & 1041 & 2.4\% \\
-    low qrs voltages & 556 & 1.3\% \\
+    low QRS voltages & 556 & 1.3\% \\
     nonspecific intraventricular conduction & 997 & 2.3\% \\
     pacing rhythm & 299 & 0.7\% \\
     premature atrial contraction & 1729 & 4.0\% \\
     premature ventricular contractions & 188 & 0.4\% \\
-    prolonged pr interval & 340 & 0.7\% \\
-    prolonged qt interval & 1513 & 3.5\% \\
-    q wave abnormal & 1013 & 2.4\% \\
+    prolonged PR interval & 340 & 0.7\% \\
+    prolonged QT interval & 1513 & 3.5\% \\
+    Q wave abnormal & 1013 & 2.4\% \\
     right axis deviation & 427 & 1.0\% \\
     right bundle branch block & 2402 & 5.6\% \\
     sinus arrhythmia & 1240 & 2.9\% \\
@@ -87,8 +87,8 @@ Table~\ref{tab:dataset_labeldx} displays the 27 labels selected for evaluation b
     sinus rhythm & 20846 & 48.4\% \\
     sinus tachycardia & 2402 & 5.6\% \\
     supraventricular premature beats & 215 & 0.5\% \\
-    t wave abnormal & 4673 & 10.8\% \\
-    t wave inversion & 1112 & 2.6\% \\
+    T wave abnormal & 4673 & 10.8\% \\
+    T wave inversion & 1112 & 2.6\% \\
     ventricular premature beats & 365 & 0.8\% \\ \hline
   \end{tabular}}
 \end{table}
@@ -126,7 +126,7 @@ First we perform signal pre-processing to normalize and clean the raw ECG signal
 Slow drift and DC offset are removed with a Butterworth highpass filter followed by smoothing using a moving average kernel of 0.02 seconds.
 Each of the cleaned leads are independently annotated with the PQRST peaks, the PRT onsets, and PRT offsets.
 
-We isolate one candidate heart beat signal for each lead by segmenting heart beat windows as a $-0.35$, 0.5 second window around each R-peak, shortening this window to $-0.25$ and 0.4 seconds if the mean heart rate exceeds 80 beats per minute.
+We isolate one candidate heart beat signal for each lead by segmenting heart beat windows as a $-0.35$ to 0.5 second window around each R-peak, shortening to a $-0.25$ to 0.4 second window if the mean heart rate exceeds 80 beats per minute.
 We create an ECG signal quality metric by interpolating the distance of each QRS segment from the average QRS segment in the data.
 ECG signal quality is therefore relative for each step in the entire length of the signal, where 1 corresponds to beats that are closest to the average QRS and 0 corresponds to beats that are most distant to the average QRS.
 We use the PQRST beat window with the highest signal quality as our candidate lead heartbeat template.
@@ -165,7 +165,7 @@ We use the \texttt{gbtree} booster method with the \texttt{gpu\_hist} tree metho
 All other model parameters are left to their defaults.
 
 The evaluation scoring function weights are used during training as instance sample weights, capping positive examples to a 0.5 threshold.
-For example, when training the 1st degree av block (IAVB) classifier we also consider instances of bradycardia (Brady), incomplete right bundle branch block (IRBBB), prolonged PR interval (LPR), sinus arrhythmia (SA), and sinus bradycardia (SB) as positive examples with 0.5 weight.
+For example, when training the 1st degree atrioventricular block (IAVB) classifier we also consider instances of bradycardia (Brady), incomplete right bundle branch block (IRBBB), prolonged PR interval (LPR), sinus arrhythmia (SA), and sinus bradycardia (SB) as positive examples with 0.5 weight.
 Other labels that have scoring function weights below 0.5 are treated as negative examples with a sample weight of 1.
 To account for the dataset label imbalance, we further scale the positive example weight using the number of negative examples over the positive examples in the training set split.
 We use repeated random sub-sampling of our total dataset, randomly splitting our 43,101 records into an 85:15 training/evaluation set split.
@@ -197,7 +197,7 @@ An overview of these classification metrics can be found in Figure~\ref{fig:clas
   \label{fig:classification_metrics_summary}
 \end{figure}
 
-Our model's top three best classified labels are normal sinus rhythm (SNR, $\text{F}_1$ mean: 0.920), right bundle branch block (RBBB, $\text{F}_1$ mean: 0.853), and left bundle branch block (LBBB, $\text{F}_1$ mean: 0.836).
+Our model's top three best classified labels are normal sinus rhythm (SNR, $\text{F}_1$ mean: 0.920), left bundle branch block (LBBB, $\text{F}_1$ mean: 0.836), and sinus tachycardia (STach, $\text{F}_1$ mean: 0.779).
 A summary of our 100 experiment $\text{F}_1$ scores for each label is in Figure~\ref{fig:f1_score}.
 
 \begin{figure*}[ht]
@@ -208,10 +208,9 @@ A summary of our 100 experiment $\text{F}_1$ scores for each label is in Figure~
 \end{figure*}
 
 Furthermore, we ran a Pearson correlation coefficient test between the label $\text{F}_1$ means and the label counts within our dataset.
-The statistical test revealed a Pearson correlation coefficient of 0.568 at a p-value of $3.8 \cdot 10^{-3}$.
+The statistical test revealed a Pearson correlation coefficient of 0.599 at a p-value of $9.7 \cdot 10^{-4}$.
 This result suggests that a positive linear correlation exists between the label occurrence in our dataset and our classification model's $\text{F}_1$ score.
 On the official phase hold out test set, our methodology achieved a challenge score of \officialscore.
-
 
 \section{Discussion \& Future Work}
 
