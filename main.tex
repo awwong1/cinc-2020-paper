@@ -24,7 +24,7 @@ Gradient Boosting Tree Ensemble}
 \author {Alexander W. Wong$^{1}$, Weijie Sun$^{2}$, Sunil V. Kalmady$^{2}$, Padma Kaul$^{2}$, Abram Hindle$^{1}$\\
 \ \\
  $^1$ University of Alberta, Edmonton, Canada \\
-$^2$ Canadian VIGOUR Center, Edmonton, Canada }
+$^2$ Canadian VIGOUR Centre, Edmonton, Canada }
 
 \maketitle
 
@@ -33,13 +33,13 @@ $^2$ Canadian VIGOUR Center, Edmonton, Canada }
 \begin{abstract}
 
 Standard 12-lead electrocardiograms (ECGs) are commonly used to detect cardiac irregularities such as atrial fibrillation, blocks, and irregular complexes.
-For the PhysioNet/CinC 2020 Challenge, we built an algorithm using gradient boosted tree ensembles fitted on morphology and signal processing features.
+For the PhysioNet/CinC 2020 Challenge, we built an algorithm using gradient boosted tree ensembles fitted on morphology and signal processing features to classify ECG diagnosis.
 
-For each lead, we derived features from heart rate variability, PQRST template shape, and full waveform duration.
-We concatenated the features of all 12 leads to fit an ensemble of gradient boosting trees and predicted probabilities of ECG instances belonging to each class.
-We used repeated random sub-sampling by splitting our dataset of 43,101 records into 100 independent runs of 85:15 training/evaluation splits for our evaluation results.
+For each lead, we derive features from heart rate variability, PQRST template shape, and the full waveform.
+We concatenate the features of all 12 leads to fit an ensemble of gradient boosting decision trees to predict probabilities of ECG instances belonging to each class.
+We use repeated random sub-sampling by splitting our dataset of 43,101 records into 100 independent runs of 85:15 training/validation splits for our evaluation results.
 
-Our methodology generates an evaluation set challenge score of 0.484, with a PhysioNet official phase hold out test set score of \officialscore under the team name, CVC.
+Our methodology generates an average validation split challenge score of 0.484, with a PhysioNet official phase hold out test set score of \officialscore under the team name, CVC.
 
 \end{abstract}
 
@@ -49,13 +49,13 @@ The electrocardiogram (ECG) is the current "gold standard" strategy for detectin
 However, ECG interpretation is a complex task with frequent disagreements between health care staff, with up to a 33\% interpretation error rate~\cite{mele_improving_2008}.
 Despite active research in computerized interpretations of ECGs, trained human over-reading and confirmation is required and emphasized in published reports~\cite{schlapfer_computer-interpreted_2017}.
 
-This work classifies standard 12-lead ECGs to their clinical diagnosis as part of the \emph{PhysioNet/Computing in Cardiology Challenge}~\cite{physionet_challenge_2020}.
-We developed a multi-label classification algorithm using entropy and signal processing inspired features and a gradient boosting tree ensemble.
+This work classifies standard 12-lead ECGs to their clinical diagnosis as part of the \emph{PhysioNet/CinC 2020 Challenge}~\cite{physionet_challenge_2020}.
+We develop a multi-label classification algorithm using entropy and signal processing inspired features and a gradient boosting decision tree ensemble.
 
 \subsection{Dataset \& Scoring Criteria}
 
 The official phase dataset contains a total of 43,101 ECG records.
-Each record is labelled with a set of one or more SNOMED CT codes, although not all labels are evaluated in the challenge.
+Each record contains a set of one or more SNOMED CT codes, although not all labels are evaluated in the challenge.
 Table~\ref{tab:dataset_labeldx} displays the 27 labels selected for evaluation by the challenge organizers.
 
 \begin{table}[tbp]
@@ -96,7 +96,6 @@ Table~\ref{tab:dataset_labeldx} displays the 27 labels selected for evaluation b
 The objective of this challenge is to maximize the metric: $\sum_{ij} w_{ij} a_{ij}$.
 Given a set of diagnoses $C = \{c_i\}$, we compute a confusion matrix $A = [a_{ij}]$ where $a_{ij}$ contains records that are classified as class $c_i$ and belong to class $c_j$.
 The weights $W = [w_{ij}]$, shown in Figure~\ref{fig:dataset_labeldx}, are set by the challenge to indicate clinical similarity between classes.
-
 
 \begin{figure}[ht]
   \centering
@@ -139,46 +138,45 @@ Template features are constructed from the extracted PQRST window during pre-pro
 Heart rate variability features rely on the relative distances between each R-peak.
 Each extraction technique is performed independently per lead.
 
-For full waveform features, we use the cleaned ECG signal and apply the \emph{tsfresh} feature extraction library.
-If the signal sampling rate exceeds 500Hz, we resample down to 500Hz, otherwise the maximum sampling rate resolution is used.
-We further limit the signal to the middle 2000 samples, or 4 seconds at 500Hz, to remove starting and trailing artifacts.
-We set the \texttt{ComprehensiveFCParameters} parameter during \emph{tsfresh} feature extraction.
-From each lead, we generate 763 full waveform features.
-
+For full waveform and heartbeat template features, we use the cleaned ECG signal and apply the \emph{tsfresh} feature extraction library.
+For full waveform features, we cap the signal sampling rate to a maximum of 500Hz before limiting the signal to the middle 2,000 samples to remove starting and trailing artifacts.
+% We set the \texttt{ComprehensiveFCParameters} parameter during \emph{tsfresh} feature extraction.
 Template features are derived from the isolated heart beat window with highest signal quality.
-No downsampling or truncation is performed due to the short duration of the extracted templates.
-The \emph{tsfresh} feature extraction settings remain unchanged from the full waveform features.
-We generate 763 template features per lead.
+Using the default feature extraction settings, we generate 763 template and 763 full waveform features per lead.
+The extracted features include autoregressive model coefficients, change quantiles, aggregate linear least-squares regression trends, peak counts, sample/approximation entropy, energy, continuous waveform transform coefficients, fast fourier transform coefficients, and other descriptive statistics of the signal.
 
-Heart rate variability (HRV) features reported by \emph{NeuroKit2} are calculated using the cleaned signal and corresponding signal annotations.
-The relative R-peak distances are the primary inputs for these generated features.
-For each lead, 53 different HRV features are generated.
+Heart rate variability (HRV) features are generated from the cleaned signal and corresponding R-peak annotations using \emph{NeuroKit2}.
+We used the default feature extraction settings and generated 53 different HRV features per lead.
+HRV features include: mean, median, standard/absolute deviation, and interquartile range of the RR intervals; standard deviation of the successive differences between RR intervals; proportion of RR intervals greater than 50/20ms over total RR intervals; and geometric indices measuring triangular interpolation of the RR interval distribution.
 
 For each 12-lead record we combine all three categories of engineered features with the age and sex parsed from the ECG record metadata.
 We arrive at a $12 \cdot (763 + 763 + 53) + 2 = 18,950$ length feature vector per 12-lead record.
-For undefined features, such as the HRV feature set on signals where no PQRST annotations could be generated, \texttt{NaN} placeholders are set.
+% For undefined features, such as the HRV feature set on signals where no PQRST annotations could be generated, \texttt{NaN} placeholders are set.
 
 \subsection{Classification}
 
 We train a XGBoost binary classifier for each of the 27 clinical diagnosis, using \texttt{xgboost@1.1.1}~\cite{chen_xgboost_2016}.
-We use the \texttt{gbtree} booster method with the \texttt{gpu\_hist} tree method and \texttt{gradient\_based} sampling method.
-All other model parameters are left to their defaults.
+% We use the \texttt{gbtree} booster method with the \texttt{gpu\_hist} tree method and \texttt{gradient\_based} sampling method.
+% All other model parameters are left to their defaults.
+We sample each training instance with a selection probability proportional to the regularized absolute value of the gradients.
+Early stopping is set to 20 rounds with binary logistic regression as our objective function.
 
-The evaluation scoring function weights are used during training as instance sample weights, capping positive examples to a 0.5 threshold.
-For example, when training the 1st degree atrioventricular block (IAVB) classifier we also consider instances of bradycardia (Brady), incomplete right bundle branch block (IRBBB), prolonged PR interval (LPR), sinus arrhythmia (SA), and sinus bradycardia (SB) as positive examples with 0.5 weight.
+We use the evaluation scoring weights as instance sample weights, capping positive examples to a 0.5 threshold.
+For example, when training the 1st degree atrioventricular block (IAVB) classifier we consider instances of bradycardia (Brady), incomplete right bundle branch block (IRBBB), prolonged PR interval (LPR), sinus arrhythmia (SA), and sinus bradycardia (SB) as positive examples with 0.5 weight.
 Other labels that have scoring function weights below 0.5 are treated as negative examples with a sample weight of 1.
-To account for the dataset label imbalance, we further scale the positive example weight using the number of negative examples over the positive examples in the training set split.
-We use repeated random sub-sampling of our total dataset, randomly splitting our 43,101 records into an 85:15 training/evaluation set split.
+To account for the dataset label imbalance, we further scale the positive weight using the number of negative samples over the positive samples in the training set split.
+We use repeated random sub-sampling of our total dataset, randomly splitting our 43,101 records into an 85:15 training/validation set split.
 
-We ran 100 experiments using the full 18,950 features to determine the feature importances.
-We calculated the average feature importance for each feature from all the experiments and models for each of the labels.
-Our challenge classification results were generated from training 100 additional models using only the top 1,000 most important features, ranked by mean feature importance.
+We run 100 experiments using the full 18,950 features to determine feature importances.
+Feature importance is the model reported gain in accuracy contributed by the feature over all branches in the decision tree.
+We average the importances outputted by the 27 classifiers in each experiment to get the mean importance for each feature.
+We generate our challenge classification results by running 100 additional experiments, using only the top 1,000 most important features ranked by mean feature importance.
 
 \section{Results}
 
 \begin{figure}[ht]
   \centering
-  \includegraphics[width=7.9cm]{fig/top_features.png}
+  \includegraphics[width=7.9cm]{fig/top_features_bar.png}
   \caption{Count of lead and feature categories comprising the top 1,000 features. Age, but not sex, is important meta.}
   \label{fig:top_features}
 \end{figure}
@@ -186,7 +184,7 @@ Our challenge classification results were generated from training 100 additional
 A categorical visualization of our top 1,000 features, broken down by lead and feature type, is shown in Figure~\ref{fig:top_features}.
 We see that heartbeat template features are particularly important, with emphasis on leads \texttt{aVR} and \texttt{V1}.
 
-Our methodology attained a mean challenge metric score of 0.484 on our evaluation splits.
+Our methodology attained a mean challenge metric score of 0.484 on our validation splits.
 Additionally, we attained mean values for AUROC of 0.890, AUPRC of 0.390, accuracy of 0.251, overall $\text{F}_1$ score of 0.370, $\text{F}_\beta$ of 0.427, and $\text{G}_\beta$ measure of 0.222 using $\beta = 2$.
 An overview of these classification metrics can be found in Figure~\ref{fig:classification_metrics_summary}.
 
@@ -214,21 +212,21 @@ On the official phase hold out test set, our methodology achieved a challenge sc
 
 \section{Discussion \& Future Work}
 
-Despite the label specific scaling of our dataset training weights, the correlation between the label occurrence with the $\text{F}_1$ scores revealed further improvements are necessary to address the existing label imbalance.
+Despite the label specific scaling of our dataset, the correlation between the label occurrence with the $\text{F}_1$ scores suggest further improvements are necessary to mitigate label imbalance.
 The label imbalance may be addressed by adding more low occurrence disorders into the existing corpus of ECG records.
 Synthesizing new records of low occurrence disorders to use as training data may also prove promising.
-Additionally, exploration of new features to use as classifier inputs may reveal common characteristics of specific heart disorders that are currently unused or missing.
+Additionally, exploration of new features to use as classifier inputs may reveal common characteristics of specific heart disorders that are currently missing.
 
 Our approach, although applicable to 12-lead ECGs, perform feature extraction on each lead separately before concatenating the features together for classification.
 We believe that further improvements can be made utilizing feature extraction approaches capable of handling multi-dimensional time series data.
 
 \section{Conclusion}
 
-We created an algorithm for the classification of 27 heart conditions using natural language and signal processing inspired feature engineering and an XGBoost tree ensemble classifier.
-We combined a set of 18,950 features from full waveform, heartbeat template, and heart rate variability groups.
-Using 100 repeated random sub-sampling of 85:15 train/evaluation, we trained models to get feature importances and distilled out 1,000 most important features.
-Using this reduced set of 1,000 features, we retrained our models and achieved a mean challenge score of 0.484 on our evaluation split.
-The official phase challenge score on the \emph{PhysioNet} hold out test set is \officialscore for our team, \emph{CVC}.
+We create an algorithm for the classification of 27 heart conditions using signal processing inspired feature engineering and an XGBoost tree ensemble classifier.
+We combine a set of 18,950 features from full waveform, heartbeat template, and heart rate variability groups.
+Using 100 repeated random sub-sampling of 85:15 train/validation, we train models to get feature importances and distilled out 1,000 most important features.
+Using this reduced set of 1,000 features, we retrain our models and achieve a mean challenge score of 0.484 on our validation split.
+The official phase challenge score on the \emph{PhysioNet/CinC} hold out test set is \officialscore for our team, \emph{CVC}.
 
 
 \section*{Acknowledgments}
