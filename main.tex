@@ -146,7 +146,7 @@ Using the default feature extraction settings, we generate 763 template and 763 
 The extracted features include autoregressive model coefficients, change quantiles, aggregate linear least-squares regression trends, peak counts, sample/approximation entropy, energy, continuous waveform transform coefficients, fast fourier transform coefficients, and other descriptive statistics of the signal.
 
 Heart rate variability (HRV) features are generated from the cleaned signal and corresponding R-peak annotations using \emph{NeuroKit2}.
-We used the default feature extraction settings and generated 53 different HRV features per lead.
+We use the default feature extraction settings and generate 53 different HRV features per lead.
 HRV features include: mean, median, standard/absolute deviation, and interquartile range of the RR intervals; standard deviation of the successive differences between RR intervals; proportion of RR intervals greater than 50/20ms over total RR intervals; and geometric indices measuring triangular interpolation of the RR interval distribution.
 
 For each 12-lead record we combine all three categories of engineered features with the age and sex parsed from the ECG record metadata.
@@ -184,8 +184,8 @@ We generate our challenge classification results by running 100 additional exper
 A categorical visualization of our top 1,000 features, broken down by lead and feature type, is shown in Figure~\ref{fig:top_features}.
 We see that heartbeat template features are particularly important, with emphasis on leads \texttt{aVR} and \texttt{V1}.
 
-Our methodology attained a mean challenge metric score of 0.484 on our validation splits.
-Additionally, we attained mean values for AUROC of 0.890, AUPRC of 0.390, accuracy of 0.251, overall $\text{F}_1$ score of 0.370, $\text{F}_\beta$ of 0.427, and $\text{G}_\beta$ measure of 0.222 using $\beta = 2$.
+Our methodology attains a mean challenge metric score of 0.484 on our validation splits.
+Additionally, we attain mean values for AUROC of 0.890, AUPRC of 0.390, accuracy of 0.251, overall $\text{F}_1$ score of 0.370, $\text{F}_\beta$ of 0.427, and $\text{G}_\beta$ measure of 0.222 using $\beta = 2$.
 An overview of these classification metrics can be found in Figure~\ref{fig:classification_metrics_summary}.
 
 \begin{figure}[hb]
@@ -205,10 +205,11 @@ A summary of our 100 experiment $\text{F}_1$ scores for each label is in Figure~
   \label{fig:f1_score}
 \end{figure*}
 
-Furthermore, we ran a Pearson correlation coefficient test between the label $\text{F}_1$ means and the label counts within our dataset.
-The statistical test revealed a Pearson correlation coefficient of 0.599 at a p-value of $9.7 \cdot 10^{-4}$.
+Furthermore, we run a Pearson correlation coefficient test between the label $\text{F}_1$ means and the label counts within our dataset.
+The statistical test reveals a Pearson correlation coefficient of 0.599 at a p-value of $9.7 \cdot 10^{-4}$.
 This result suggests that a positive linear correlation exists between the label occurrence in our dataset and our classification model's $\text{F}_1$ score.
-On the official phase hold out test set, our methodology achieved a challenge score of \officialscore.
+
+On the official phase hold out test set, our methodology achieves a challenge score of \officialscore.
 
 \section{Discussion \& Future Work}
 
