@@ -181,12 +181,12 @@ We generate our challenge classification results by running 100 additional exper
   \label{fig:top_features}
 \end{figure}
 
-A categorical visualization of our top 1,000 features, broken down by lead and feature type, is shown in Figure~\ref{fig:top_features}.
+A categorical visualization of our top 1,000 features, grouped by lead and feature type, is shown in Figure~\ref{fig:top_features}.
 We see that heartbeat template features are particularly important, with emphasis on leads \texttt{aVR} and \texttt{V1}.
 
-Our methodology attains a mean challenge metric score of 0.484 on our validation splits.
+We present our metrics from the 15\% validation splits of the dataset in Figure~\ref{fig:classification_metrics_summary}.
+Our methodology attains a mean challenge metric score of 0.484.
 Additionally, we attain mean values for AUROC of 0.890, AUPRC of 0.390, accuracy of 0.251, overall $\text{F}_1$ score of 0.370, $\text{F}_\beta$ of 0.427, and $\text{G}_\beta$ measure of 0.222 using $\beta = 2$.
-An overview of these classification metrics can be found in Figure~\ref{fig:classification_metrics_summary}.
 
 \begin{figure}[hb]
   \centering
