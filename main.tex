@@ -28,7 +28,8 @@ $^2$ Canadian VIGOUR Centre, Edmonton, Canada }
 
 \maketitle
 
-\newcommand{\officialscore}{{0.476} }
+\newcommand{\officialvalscore}{{0.476} }
+\newcommand{\officialtestscore}{{-0.080} }
 
 \begin{abstract}
 
@@ -39,7 +40,7 @@ For each lead, we derive features from heart rate variability, PQRST template sh
 We concatenate the features of all 12 leads to fit an ensemble of gradient boosting decision trees to predict probabilities of ECG instances belonging to each class.
 We use repeated random sub-sampling by splitting our dataset of 43,101 records into 100 independent runs of 85:15 training/validation splits for our evaluation results.
 
-Our methodology generates an average validation split challenge score of 0.486, with a PhysioNet official phase hold out test set score of \officialscore under the team name, CVC.
+Our methodology generates an official phase validation set score of \officialvalscore and test set score of \officialtestscore under the team name, CVC, placing us 35 out of 40 in the rankings.
 
 \end{abstract}
 
@@ -108,7 +109,7 @@ Refer to Perez Alday \emph{et al.}~\cite{physionet_challenge_2020} for the descr
 Our approach is inspired by existing methods which use feature engineering and shallow learning classifiers~\cite{goodwin_classification_2017}.
 Figure~\ref{fig:methodology} shows an overview of our learning algorithm pipeline from first cleaning and preprocessing the ECG, to then extracting the full waveform, heartbeat template, and heart rate variability features, finally using these features as input to our binary classifiers.
 
-\begin{figure}[hb]
+\begin{figure}[tbp]
   \centering
   \includegraphics[width=7.9cm]{fig/methodology_svg.png}
   \caption{Methodology overview. Feature engineering is performed concurrently for each lead then concatenated.}
@@ -154,7 +155,7 @@ We arrive at a $12 \cdot (763 + 763 + 53) + 2 = 18,950$ length feature vector pe
 
 \subsection{Classification}
 
-We train a XGBoost binary classifier for each of the 27 clinical diagnosis, using \texttt{xgboost@1.1.1}~\cite{chen_xgboost_2016}.
+We train a XGBoost binary classifier for each of the 27 clinical diagnoses, using \texttt{xgboost@1.1.1}~\cite{chen_xgboost_2016}.
 % We use the \texttt{gbtree} booster method with the \texttt{gpu\_hist} tree method and \texttt{gradient\_based} sampling method.
 % All other model parameters are left to their defaults.
 We sample each training instance with a selection probability proportional to the regularized absolute value of the gradients.
@@ -190,9 +191,10 @@ Our challenge submission's classification model only needs to train the phase tw
 
 A categorical visualization of the top 1,000 features used in the challenge submission model, grouped by lead and feature type, is shown in Figure~\ref{fig:top_features}.
 Most of the features are derived from leads \texttt{aVR} (159 features) and \texttt{V1} (150 features).
-the \texttt{aVL} lead is least represented with only 46 derived features used by the phase 2 classifier.
-The heartbeat template category containing 536 features is the most numerous feature type. There are 291 full waveform features and 172 heart rate variability features.
-The age meta feature that is parsed from the ECG record header is also incorporated.
+The \texttt{aVL} lead is least represented with only 46 derived features used by the phase 2 classifier.
+The heartbeat template category containing 536 features is the most numerous feature type.
+There are 291 full waveform features and 172 heart rate variability features.
+The age meta feature parsed from the ECG record header is also used.
 
 We present our metrics from the 15\% validation splits of the dataset for phases one and two of our classification models in Figure~\ref{fig:classification_metrics_summary}.
 Our phase two models have higher mean values for all classification metrics except for accuracy.
@@ -208,7 +210,7 @@ Additionally, we attain phase two mean values for AUROC of 0.891, AUPRC of 0.389
   \label{fig:classification_metrics_summary}
 \end{figure}
 
-Our model's top three best classified labels are normal sinus rhythm (SNR, $\text{F}_1$ mean: 0.924), left bundle branch block (LBBB, $\text{F}_1$ mean: 0.840), and sinus tachycardia (STach, $\text{F}_1$ mean: 0.777).
+Our model's top three best classified labels are normal sinus rhythm (SNR, $\bar{\text{F}}_1$: 0.924), left bundle branch block (LBBB, $\bar{\text{F}}_1$: 0.840), and sinus tachycardia (STach, $\bar{\text{F}}_1$: 0.777).
 A summary of our phase two $\text{F}_1$ scores on the 100 validation splits for each label is shown in Figure~\ref{fig:f1_score}.
 
 \begin{figure*}[ht]
@@ -222,7 +224,7 @@ Furthermore, we run a Pearson correlation coefficient test between the label $\t
 The statistical test reveals a Pearson correlation coefficient of 0.602 at a p-value of $9.0 \cdot 10^{-4}$.
 This result suggests that a positive linear correlation exists between the label occurrence in our dataset and our classification model's $\text{F}_1$ score.
 
-On the official phase hold out test set, our methodology achieves a challenge score of \officialscore.
+Our methodology achieves a challenge score of \officialvalscore on the official validation set and \officialtestscore for the official test set, ranking team CVC at 35 of 40 teams.
 
 \section{Discussion \& Future Work}
 
@@ -252,7 +254,8 @@ We create an algorithm for the classification of 27 heart conditions using signa
 We combine a set of 18,950 features from full waveform, heartbeat template, and heart rate variability groups.
 Using 100 repeated random sub-sampling of 85:15 train/validation, we train models to get feature importances and distilled out 1,000 most important features.
 Using this reduced set of 1,000 features, we retrain our models and achieve a mean challenge score of 0.486 on our validation split.
-The official phase challenge score on the \emph{PhysioNet/CinC} hold out test set is \officialscore for our team, \emph{CVC}.
+For our team, \emph{CVC}, the official phase challenge scores is \officialvalscore on the validation set and \officialtestscore on the test set.
+We attain a rank of 35 of 40 qualifying teams.
 
 
 \section*{Acknowledgments}
