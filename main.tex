@@ -40,7 +40,7 @@ For each lead, we derive features from heart rate variability, PQRST template sh
 We concatenate the features of all 12 leads to fit an ensemble of gradient boosting decision trees to predict probabilities of ECG instances belonging to each class.
 We use repeated random sub-sampling by splitting our dataset of 43,101 records into 100 independent runs of 85:15 training/validation splits for our evaluation results.
 
-Our methodology generates an official phase validation set score of \officialvalscore and test set score of \officialtestscore under the team name, CVC, placing us 35 out of 40 in the rankings.
+Our methodology generates an official phase validation set score of \officialvalscore and test set score of \officialtestscore under the team name, CVC, placing us 36 out of 41 in the rankings.
 
 \end{abstract}
 
@@ -224,7 +224,7 @@ Furthermore, we run a Pearson correlation coefficient test between the label $\t
 The statistical test reveals a Pearson correlation coefficient of 0.602 at a p-value of $9.0 \cdot 10^{-4}$.
 This result suggests that a positive linear correlation exists between the label occurrence in our dataset and our classification model's $\text{F}_1$ score.
 
-Our methodology achieves a challenge score of \officialvalscore on the official validation set and \officialtestscore for the official test set, ranking team CVC at 35 of 40 teams.
+Our methodology achieves a challenge score of \officialvalscore on the official validation set and \officialtestscore for the official test set, ranking team CVC at 36 of 41 teams.
 
 \section{Discussion \& Future Work}
 
@@ -255,7 +255,7 @@ We combine a set of 18,950 features from full waveform, heartbeat template, and 
 Using 100 repeated random sub-sampling of 85:15 train/validation, we train models to get feature importances and distilled out 1,000 most important features.
 Using this reduced set of 1,000 features, we retrain our models and achieve a mean challenge score of 0.486 on our validation split.
 For our team, \emph{CVC}, the official phase challenge scores is \officialvalscore on the validation set and \officialtestscore on the test set.
-We attain a rank of 35 of 40 qualifying teams.
+We attain a rank of 36 of 41 qualifying teams.
 
 
 \section*{Acknowledgments}
