@@ -33,14 +33,14 @@ $^2$ Canadian VIGOUR Centre, Edmonton, Canada }
 
 \begin{abstract}
 
-Standard 12-lead electrocardiograms (ECGs) are commonly used to detect cardiac irregularities such as atrial fibrillation, blocks, and irregular complexes.
+The 12-lead electrocardiogram (ECG) is a commonly used tool for detecting cardiac abnormalities such as atrial fibrillation, blocks, and irregular complexes.
 For the PhysioNet/CinC 2020 Challenge, we built an algorithm using gradient boosted tree ensembles fitted on morphology and signal processing features to classify ECG diagnosis.
 
-For each lead, we derive features from heart rate variability, PQRST template shape, and the full waveform.
-We concatenate the features of all 12 leads to fit an ensemble of gradient boosting decision trees to predict probabilities of ECG instances belonging to each class.
-We use repeated random sub-sampling by splitting our dataset of 43,101 records into 100 independent runs of 85:15 training/validation splits for our evaluation results.
+For each lead, we derive features from heart rate variability, PQRST template shape, and the full signal waveform.
+We join the features of all 12 leads to fit an ensemble of gradient boosting decision trees to predict probabilities of ECG instances belonging to each class.
+We use repeated random sub-sampling by splitting our dataset of 43,101 records into 100 independent runs of 85:15 training/validation splits for our internal evaluation results.
 
-Our methodology generates an official phase validation set score of \officialvalscore and test set score of \officialtestscore under the team name, CVC, placing us 36 out of 41 in the rankings.
+Our methodology generates us an official phase validation set score of \officialvalscore and test set score of \officialtestscore under the team name, CVC, placing us 36 out of 41 in the rankings.
 
 \end{abstract}
 
@@ -56,7 +56,7 @@ We develop a multi-label classification algorithm using entropy and signal proce
 \subsection{Dataset \& Scoring Criteria}
 
 The official phase dataset contains a total of 43,101 ECG records.
-Each record contains a set of one or more SNOMED CT codes, although only a subset of 27 codes are evaluated in the challenge.
+Each record contains a set of one or more SNOMED CT codes, with only a subset of 27 codes evaluated in the challenge.
 % Table~\ref{tab:dataset_labeldx} displays the 27 labels selected for evaluation by the challenge organizers.
 % \begin{table}[tbp]
 %   \caption{\label{tab:dataset_labeldx} Labels count and percentage in dataset.}
@@ -92,7 +92,7 @@ Each record contains a set of one or more SNOMED CT codes, although only a subse
 %     ventricular premature beats & 365 & 0.8\% \\ \hline
 %   \end{tabular}}
 % \end{table}
-The objective of this challenge is to maximize the metric: $\sum_{ij} w_{ij} a_{ij}$.
+The challenge objective is to maximize the metric: $\sum_{ij} w_{ij} a_{ij}$.
 Given a set of diagnoses $C = \{c_i\}$, we compute a confusion matrix $A = [a_{ij}]$ where $a_{ij}$ contains records that are classified as class $c_i$ and belong to class $c_j$.
 % The weights $W = [w_{ij}]$, shown in Figure~\ref{fig:dataset_labeldx}, are set by the challenge to indicate clinical similarity between classes.
 The weights $W = [w_{ij}]$, are set by the challenge to indicate clinical similarity between classes.
@@ -239,7 +239,7 @@ We believe that further improvements can be made utilizing feature extraction ap
 Our approach does not use additional external datasets, nor do we modify any of the labels provided in the available dataset.
 We anticipate that further corrections in the ECG diagnosis labels, and including more ECG records, would enable our approach to achieve more competitive competition scores.
 
-We acknowledge that our results report optimistic values for the classification metrics, as our internal split of the dataset does not include a hold-out test set.
+We acknowledge that our internal results and corresponding figures report optimistic values for the classification metrics, as our internal split of the dataset does not include a hold-out test set.
 We rely on the hold out test set from the challenge organizers to fairly evaluate our challenge score.
 Future work includes replicating our method using a local training, validation, and test set split, reporting label-wise $\text{F}_1$ on the test set.
 
@@ -254,7 +254,7 @@ We create an algorithm for the classification of 27 heart conditions using signa
 We combine a set of 18,950 features from full waveform, heartbeat template, and heart rate variability groups.
 Using 100 repeated random sub-sampling of 85:15 train/validation, we train models to get feature importances and distilled out 1,000 most important features.
 Using this reduced set of 1,000 features, we retrain our models and achieve a mean challenge score of 0.486 on our validation split.
-For our team, \emph{CVC}, the official phase challenge scores is \officialvalscore on the validation set and \officialtestscore on the test set.
+For our team, \emph{CVC}, the official phase challenge scores are \officialvalscore on the validation set and \officialtestscore on the test set.
 We attain a rank of 36 of 41 qualifying teams.
 
 
