@@ -38,6 +38,7 @@ For the PhysioNet/CinC 2020 Challenge, we built an algorithm using gradient boos
 
 For each lead, we derive features from heart rate variability, PQRST template shape, and the full signal waveform.
 We join the features of all 12 leads to fit an ensemble of gradient boosting decision trees to predict probabilities of ECG instances belonging to each class.
+We train a phase one set of feature importance determining models to isolate the top 1,000 most important features to use in our phase two diagnosis prediction models.
 We use repeated random sub-sampling by splitting our dataset of 43,101 records into 100 independent runs of 85:15 training/validation splits for our internal evaluation results.
 
 Our methodology generates us an official phase validation set score of \officialvalscore and test set score of \officialtestscore under the team name, CVC, placing us 36 out of 41 in the rankings.
@@ -46,10 +47,9 @@ Our methodology generates us an official phase validation set score of \official
 
 \section{Introduction}
 
-The electrocardiogram (ECG) is the current "gold standard" strategy for detecting cardiac diseases, outperforming screening history and physical examinations in accuracy and sensitivity~\cite{harmon_effectiveness_2015}.
-However, ECG interpretation is a complex task with frequent disagreements between health care staff, with up to a 33\% interpretation error rate~\cite{mele_improving_2008}.
-Despite active research in computerized interpretations of ECGs, trained human over-reading and confirmation is required and emphasized in published reports~\cite{schlapfer_computer-interpreted_2017}.
-
+The electrocardiogram (ECG), when correctly interpreted, is an effective tool for detecting cardiac diseases.
+% However, ECG interpretation is a complex task with frequent disagreements between health care staff, with up to a 33\% interpretation error rate~\cite{mele_improving_2008}.
+Despite much research in computerized interpretations of ECGs, trained human over-reading and confirmation is required and emphasized in published reports~\cite{SMITH201988,MADIAS2018413}.
 This work classifies standard 12-lead ECGs to their clinical diagnosis as part of the \emph{PhysioNet/CinC 2020 Challenge}~\cite{physionet_challenge_2020}.
 We develop a multi-label classification algorithm using entropy and signal processing inspired features and a gradient boosting decision tree ensemble.
 
