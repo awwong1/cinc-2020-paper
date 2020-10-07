@@ -279,8 +279,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1.1342299"
-     inkscape:cx="515.46177"
-     inkscape:cy="344.11083"
+     inkscape:cx="727.05908"
+     inkscape:cy="379.37705"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -288,8 +288,8 @@
      showguides="false"
      inkscape:guide-bbox="true"
      inkscape:window-width="1920"
-     inkscape:window-height="1015"
-     inkscape:window-x="0"
+     inkscape:window-height="1051"
+     inkscape:window-x="1920"
      inkscape:window-y="0"
      inkscape:window-maximized="1"
      inkscape:snap-text-baseline="true"
@@ -301,7 +301,7 @@
      inkscape:snap-bbox-edge-midpoints="true"
      inkscape:snap-bbox-midpoints="true"
      inkscape:snap-others="false"
-     inkscape:snap-nodes="true"
+     inkscape:snap-nodes="false"
      inkscape:object-paths="false">
     <inkscape:grid
        type="xygrid"
@@ -324,7 +324,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -580,17 +580,17 @@
          style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332;paint-order:stroke fill markers"
          xml:space="preserve"><tspan
            id="tspan4464"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6.3499999px;line-height:0;font-family:courier;-inkscape-font-specification:courier;writing-mode:lr-tb;stroke-width:0.26458332;paint-order:stroke fill markers"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.05555534px;line-height:0;font-family:courier;-inkscape-font-specification:courier;writing-mode:lr-tb;stroke-width:0.26458332;paint-order:stroke fill markers"
            y="177.87175"
            x="2.3513103"
-           sodipodi:role="line">Cap sampling rate to 500Hz, 2000 samples</tspan></text>
+           sodipodi:role="line">Cap frequency to 500Hz, 2000 samples</tspan></text>
       <text
          id="text4470"
          y="183.86617"
          x="2.4340153"
          style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332;paint-order:stroke fill markers"
          xml:space="preserve"><tspan
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6.3499999px;font-family:Courier;-inkscape-font-specification:Courier;stroke-width:0.26458332;paint-order:stroke fill markers"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.05555556px;font-family:Courier;-inkscape-font-specification:Courier;stroke-width:0.26458332;paint-order:stroke fill markers"
            y="183.86617"
            x="2.4340153"
            id="tspan4468"
@@ -606,11 +606,11 @@
          x="115"
          style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332;paint-order:stroke fill markers"
          xml:space="preserve"><tspan
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6.3499999px;font-family:courier;-inkscape-font-specification:courier;stroke-width:0.26458332;paint-order:stroke fill markers"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.05555534px;font-family:courier;-inkscape-font-specification:courier;stroke-width:0.26458332;paint-order:stroke fill markers"
            y="217"
            x="115"
            id="tspan4556"
-           sodipodi:role="line">Use R-peak window with highest quality</tspan></text>
+           sodipodi:role="line">Use highest quality R-peak window</tspan></text>
       <text
          xml:space="preserve"
          style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332;paint-order:stroke fill markers"
@@ -621,7 +621,7 @@
            id="tspan4468-6"
            x="115.06411"
            y="223.38359"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6.3499999px;font-family:Courier;-inkscape-font-specification:Courier;stroke-width:0.26458332;paint-order:stroke fill markers">and run tsfresh feature extraction</tspan></text>
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.05555556px;font-family:Courier;-inkscape-font-specification:Courier;stroke-width:0.26458332;paint-order:stroke fill markers">and run tsfresh feature extraction</tspan></text>
     </g>
     <g
        style="paint-order:stroke fill markers"
@@ -633,7 +633,7 @@
          x="114.53345"
          style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332;paint-order:stroke fill markers"
          xml:space="preserve"><tspan
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6.3499999px;font-family:courier;-inkscape-font-specification:courier;stroke-width:0.26458332;paint-order:stroke fill markers"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.05555556px;font-family:courier;-inkscape-font-specification:courier;stroke-width:0.26458332;paint-order:stroke fill markers"
            y="242.1013"
            x="114.53345"
            id="tspan4626"
@@ -644,7 +644,7 @@
          x="115"
          style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332;paint-order:stroke fill markers"
          xml:space="preserve"><tspan
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6.3499999px;font-family:courier;-inkscape-font-specification:courier;stroke-width:0.26458332;paint-order:stroke fill markers"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.05555556px;font-family:courier;-inkscape-font-specification:courier;stroke-width:0.26458332;paint-order:stroke fill markers"
            y="248.05832"
            x="115"
            id="tspan4630"
@@ -829,82 +829,82 @@
        id="rect6363"
        width="70"
        height="40.545422"
-       x="90"
+       x="86.824997"
        y="276.45459" />
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:8.46666622px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-       x="92.354164"
+       x="89.179161"
        y="288.00418"
        id="text6367"><tspan
          sodipodi:role="line"
          id="tspan6365"
-         x="92.354164"
+         x="89.179161"
          y="288.00418"
          style="stroke-width:0.26458332">XGBClassifiers</tspan><tspan
          sodipodi:role="line"
-         x="92.354164"
+         x="89.179161"
          y="298.58752"
          style="stroke-width:0.26458332"
          id="tspan6369">Phase 1</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:8.46666622px;line-height:1;font-family:courier;-inkscape-font-specification:courier;font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-       x="92.354164"
+       x="89.179161"
        y="306.12491"
        id="text6373"><tspan
          sodipodi:role="line"
          id="tspan6371"
-         x="92.354164"
+         x="89.179161"
          y="306.12491"
-         style="font-size:6.35002136px;line-height:1;stroke-width:0.26458332">All 18,950</tspan><tspan
+         style="font-size:8.46668816px;line-height:1;stroke-width:0.26458332">All 18,950</tspan><tspan
          sodipodi:role="line"
-         x="92.354164"
+         x="89.179161"
          y="314.59158"
-         style="font-size:6.35002136px;line-height:1;stroke-width:0.26458332"
+         style="font-size:8.46668816px;line-height:1;stroke-width:0.26458332"
          id="tspan6375">features used</tspan></text>
     <rect
        style="fill:#ffffff;stroke:#000000;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;paint-order:stroke fill markers"
        id="rect6363-2"
        width="70"
        height="40.545399"
-       x="200"
+       x="204.76244"
        y="276.45459" />
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:8.46666622px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-       x="202.35416"
+       x="207.11659"
        y="288.00418"
        id="text6367-6"><tspan
          sodipodi:role="line"
          id="tspan6365-9"
-         x="202.35416"
+         x="207.11659"
          y="288.00418"
          style="stroke-width:0.26458332">XGBClassifiers</tspan><tspan
          sodipodi:role="line"
-         x="202.35416"
+         x="207.11659"
          y="298.58752"
          style="stroke-width:0.26458332"
          id="tspan6369-1">Phase 2</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:8.46666622px;line-height:1;font-family:courier;-inkscape-font-specification:courier;font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-       x="202.35416"
+       x="207.11659"
        y="306.12491"
        id="text6373-0"><tspan
          sodipodi:role="line"
          id="tspan6371-4"
-         x="202.35416"
+         x="207.11659"
          y="306.12491"
-         style="font-size:6.3499999px;line-height:1;stroke-width:0.26458332">Top 1,000</tspan><tspan
+         style="font-size:8.46666622px;line-height:1;stroke-width:0.26458332">Top 1,000</tspan><tspan
          sodipodi:role="line"
-         x="202.35416"
+         x="207.11659"
          y="314.59158"
-         style="font-size:6.3499999px;line-height:1;stroke-width:0.26458332"
+         style="font-size:8.46666622px;line-height:1;stroke-width:0.26458332"
          id="tspan6375-2">features used</tspan></text>
     <g
        id="g6470"
-       transform="translate(107.35415,3.1208329)">
+       transform="translate(102.59162,2.0624995)">
       <text
          xml:space="preserve"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:8.46666622px;line-height:1.25;font-family:courier;-inkscape-font-specification:courier;font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
@@ -915,11 +915,11 @@
            id="tspan6455"
            x="55.000004"
            y="291.2334"
-           style="font-size:4.93888903px;stroke-width:0.26458332">Feature</tspan><tspan
+           style="font-size:7.05555582px;stroke-width:0.26458332">Feature</tspan><tspan
            sodipodi:role="line"
            x="55.000004"
            y="301.81674"
-           style="font-size:4.93888903px;stroke-width:0.26458332"
+           style="font-size:7.05555582px;stroke-width:0.26458332"
            id="tspan6459" /></text>
       <text
          xml:space="preserve"
@@ -931,7 +931,7 @@
            id="tspan6461"
            x="55.000004"
            y="297"
-           style="font-size:4.93888903px;stroke-width:0.26458332">Importances</tspan></text>
+           style="font-size:7.05555582px;stroke-width:0.26458332">Importances</tspan></text>
     </g>
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.30000001;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker6836)"
@@ -941,7 +941,7 @@
        inkscape:connector-curvature="0" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.30000001;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker6926)"
-       d="m 160,303.00396 h 38.84809"
+       d="m 157.79926,303.00366 h 45.9499"
        id="path6916"
        inkscape:connector-type="polyline"
        inkscape:connector-curvature="0" />
