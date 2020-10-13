@@ -2,6 +2,8 @@
 
 Latex source code for CinC 2020 Paper, PhysioNet Challenge on 12-Lead ECG Classification
 
+Project: [https://github.com/awwong1/physionet-challenge-2020](https://github.com/awwong1/physionet-challenge-2020)
+
 ## Quickstart
 
 ```bash
